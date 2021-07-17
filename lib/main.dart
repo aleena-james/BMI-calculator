@@ -1,113 +1,165 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MaterialApp(
+    home: HomeScr(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class HomeScr extends StatefulWidget {
+  const HomeScr({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomeScrState createState() => _HomeScrState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+class _HomeScrState extends State<HomeScr> {
+  TextEditingController _ht = TextEditingController();
+  TextEditingController _wt = TextEditingController();
+  double res = 0;
+  String modtext = "";
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+      backgroundColor: Colors.grey[900],
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 300.0,
+                height: 140.0,
+                child: FittedBox(
+                  child: Text(
+                    "BMI Calculator",
+                    style: TextStyle(
+                        color: Colors.blueGrey[200],
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          width: 150,
+                          child: TextField(
+                            textAlign: TextAlign.center,
+                            controller: _ht,
+                            style: TextStyle(
+                                fontSize: 42,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.white),
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: "Height(cm)",
+                              hintStyle: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.white.withOpacity(.8)),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: 150,
+                          child: TextField(
+                            controller: _wt,
+                            style: TextStyle(
+                                fontSize: 42,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.white),
+                            textAlign: TextAlign.center,
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              hintText: "Weight(kg)",
+                              hintStyle: TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w300,
+                                  color: Colors.white.withOpacity(.8)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        double h = double.parse(_ht.text);
+                        double w = double.parse(_wt.text);
+                        setState(() {
+                          res = (w / (h * h)) * 10000;
+                          if (res < 18.5) {
+                            modtext = "Underweight";
+                          } else if (res >= 18.5 && res < 25) {
+                            modtext = "Normal Weight";
+                          } else if (res >= 25 && res < 30) {
+                            modtext = "Overweight";
+                          } else if (res > 30) {
+                            modtext = "Obese";
+                          }
+                        });
+                      },
+                      child: Container(
+                        color: Colors.black,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Calculate",
+                            style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.white.withOpacity(.8)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Container(
+                      child: Text(
+                        res.toStringAsFixed(2),
+                        style: TextStyle(
+                            fontSize: 60,
+                            fontWeight: FontWeight.w300,
+                            color: Colors.white.withOpacity(.8)),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Visibility(
+                      visible: modtext.isNotEmpty,
+                      child: Container(
+                        child: Text(
+                          modtext,
+                          style: TextStyle(
+                              fontSize: 40,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.white.withOpacity(.8)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
